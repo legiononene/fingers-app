@@ -139,6 +139,17 @@ const Batch = ({ slug }: { slug: string }) => {
           <h4>
             No data
             <div className="buttons">
+              <button onClick={() => fetchDashboardData()}>
+                <IoReloadCircle size={20} />
+              </button>
+              <button
+                onClick={() => {
+                  data && setOpenAddStudents(true);
+                  setSuccess("");
+                }}
+              >
+                <AiOutlineUserAdd size={20} />
+              </button>
               <button onClick={() => handleDeleteClick(slug)}>
                 <MdDelete size={20} />
               </button>
@@ -155,6 +166,13 @@ const Batch = ({ slug }: { slug: string }) => {
 
           {/* Error message if deletion fails */}
           {deleteError && <p className="error">{deleteError}</p>}
+          <AddStudents
+            branchID={slug}
+            open={openAddStudents}
+            close={setOpenAddStudents}
+            success={success}
+            setSuccess={setSuccess}
+          />
         </div>
       </section>
     );
