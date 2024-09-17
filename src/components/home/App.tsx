@@ -28,9 +28,11 @@ const App = () => {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const [scale, setScale] = useState({ scale: 1 });
   const [settings, setSettings] = useState<boolean>(false);
-  const [lockedScale, setLockedScale] = useState<number | null>(1);
+  const [lockedScale, setLockedScale] = useState<number | null>(null);
   const [Primary, setPrimary] = useState("1");
   const { token, logout } = useAuth();
+  const [imageLoading, setImageLoading] = useState(true);
+  const imgRef = useRef<HTMLImageElement | null>(null);
   useEffect(() => {
     if (token) {
       // Initialize the socket connection
@@ -96,7 +98,7 @@ const App = () => {
 
   const handlePrev = () => {
     if (data) {
-     
+      setImageLoading(true);
       setImageIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : data.fingers.length - 1
       );
@@ -106,6 +108,7 @@ const App = () => {
 
   const handleNext = () => {
     if (data) {
+      setImageLoading(true);
       setImageIndex((prevIndex) =>
         prevIndex < data.fingers.length - 1 ? prevIndex + 1 : 0
       );
@@ -139,7 +142,9 @@ const App = () => {
       setLockedScale(null);
     }
   };
-
+  useEffect(() => {
+    setLockedScale(data.fingers.length != 0 ? data.fingers[count].scale : 1);
+  }, [data, count]);
   return (
     <>
       <section id="logout">
@@ -166,7 +171,9 @@ const App = () => {
                 alt="finger"
                 style={{
                   transform: `scale(${
-                    lockedScale !== null ? lockedScale : scale.scale
+                    lockedScale !== null
+                      ? data.fingers[count].scale
+                      : scale.scale
                   })`,
                 }}
               />
@@ -179,7 +186,7 @@ const App = () => {
             </div>
             <div className="numbers">
               <p>FD: {data.fingers[count].primary}</p>
-              <p>Scale: {scale.scale.toFixed(3)}</p>
+              <p>Scale: {data.fingers[count].scale}</p>
             </div>
           </div>
           <div className="button-container">
@@ -261,3 +268,4 @@ const App = () => {
 };
 
 export default App;
+11554422;
