@@ -22,7 +22,19 @@
     flex-direction: column;
     gap: rem(10);
 
+    .password-field {
+      display: flex;
+      gap: rem(10);
+
+      button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
     input {
+      width: 100%;
       outline: none;
       border: rem;
       border-radius: rem(10);
