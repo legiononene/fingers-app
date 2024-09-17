@@ -31,8 +31,6 @@ const App = () => {
   const [lockedScale, setLockedScale] = useState<number | null>(1);
   const [Primary, setPrimary] = useState("1");
   const { token, logout } = useAuth();
-  const [imageLoading, setImageLoading] = useState(true);
-  
   useEffect(() => {
     if (token) {
       // Initialize the socket connection
@@ -98,7 +96,7 @@ const App = () => {
 
   const handlePrev = () => {
     if (data) {
-      setImageLoading(true);
+     
       setImageIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : data.fingers.length - 1
       );
@@ -108,7 +106,6 @@ const App = () => {
 
   const handleNext = () => {
     if (data) {
-      setImageLoading(true);
       setImageIndex((prevIndex) =>
         prevIndex < data.fingers.length - 1 ? prevIndex + 1 : 0
       );
@@ -124,7 +121,13 @@ const App = () => {
     if (lockedScale === null) {
       try {
         await setFinger(
-          { primary: "FD-" + Primary, scale: scale.scale },
+          {
+            primary:
+              Primary == "1"
+                ? data.fingers[count].primary ?? ""
+                : "FD-" + Primary,
+            scale: scale.scale,
+          },
           data.fingers[count].id.toString(),
           token ?? ""
         );
@@ -258,4 +261,3 @@ const App = () => {
 };
 
 export default App;
-11554422;
