@@ -1,4 +1,6 @@
 "use client";
+import { AiFillEye } from "react-icons/ai";
+import { AiFillEyeInvisible } from "react-icons/ai";
 
 import { login as AdminLogin } from "@/api/admin-api";
 import { login as UserLogin } from "@/api/users-api";
@@ -17,8 +19,12 @@ const Page = () => {
     password: "",
     role: "USER",
   });
+
+  const [showPassword, setShowPassword] = useState(false); // state for toggling password visibility
+
   const { login } = useAuth();
   const router = useRouter();
+
   const handleForm = (e: FormEvent) => {
     e.preventDefault();
     if (formData.role === "USER") {
@@ -45,14 +51,14 @@ const Page = () => {
   ) => {
     const { name, value } = e.target;
 
-    if (name) {
-      setFormData((data) => ({
-        ...data,
-        [name]: value,
-      }));
-    } else {
-      console.error("Input element is missing a 'name' attribute.");
-    }
+    setFormData((data) => ({
+      ...data,
+      [name]: value,
+    }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
   };
 
   return (
@@ -68,13 +74,26 @@ const Page = () => {
           value={formData.username}
           placeholder="Username"
         />
-        <input
-          type="password"
-          name="password"
-          onChange={inputHandle}
-          value={formData.password} // Changed from formData.username to formData.password
-          placeholder="Password"
-        />
+        <div className="password-field">
+          <input
+            type={showPassword ? "text" : "password"} // toggles between text and password input
+            name="password"
+            onChange={inputHandle}
+            value={formData.password}
+            placeholder="Password"
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="toggle-password"
+          >
+            {showPassword ? (
+              <AiFillEyeInvisible size={20} color="#d92e1c" />
+            ) : (
+              <AiFillEye size={20} color="#03c147" />
+            )}
+          </button>
+        </div>
         <select name="role" value={formData.role} onChange={inputHandle}>
           <option value="USER">User</option>
           <option value="ADMIN">Admin</option>
