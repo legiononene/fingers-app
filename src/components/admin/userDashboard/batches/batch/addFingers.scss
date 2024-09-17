@@ -1,0 +1,88 @@
+@use "@/app/scss/variables" as *;
+
+#AddFingers {
+  @include full-width;
+  position: fixed;
+  background-color: #0000003f;
+  inset: 0;
+  height: 100vh;
+  height: 100svh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .box {
+    width: 100%;
+    max-height: 80svh;
+    background-color: $offLight;
+    padding: rem(20);
+    border-radius: rem(10);
+    overflow-y: scroll;
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background-color: $offLight;
+      padding: rem(10);
+      border-radius: rem(10);
+
+      button {
+        padding: rem(5) rem(10);
+        background-color: $pink;
+        border-radius: rem(10);
+        cursor: pointer;
+      }
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: rem(10);
+
+      button {
+        background-color: $dark;
+        padding: rem(10) rem(10);
+        border-radius: rem(10);
+        color: $light;
+        cursor: pointer;
+
+        &[type="button"] {
+          width: fit-content;
+          background-color: $green;
+          padding: rem(5) rem(10);
+          border-radius: rem(10);
+          color: $dark;
+        }
+
+        &[type="submit"] {
+          position: sticky;
+          bottom: 0;
+        }
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+
+        button:disabled,
+        button[disabled] {
+          background-color: gray;
+          cursor: not-allowed;
+        }
+
+        .remove {
+          background-color: $red;
+        }
+      }
+
+      .file-input-group {
+        display: flex;
+        align-items: center;
+        gap: rem(10);
+      }
+    }
+  }
+}

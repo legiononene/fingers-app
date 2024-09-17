@@ -1,0 +1,92 @@
+@use "sass:math";
+
+$dark: #000000;
+$light: #ffffff;
+$green: #03c147;
+$blue: #5cb6eb;
+$yellow: #fed001;
+$red: #d92e1c;
+$pink: #dea6af;
+$offLight: #e3e3e2;
+$offDark: #0a0a0a;
+$orange: #fe8a3d;
+$purple: #7649be;
+$seaBlue: #214287;
+$darkBlue: #0a369d;
+$lightBorder: rgba(255, 255, 255, 0.4);
+
+@function rem($pixel) {
+  @if math.is-unitless($pixel) {
+    @return math.div($pixel, 16) + rem;
+  } @else {
+    @error 'Don\'t use units when using the rem() function; only numbers.';
+  }
+}
+
+@function em($pixel) {
+  @if math.is-unitless($pixel) {
+    @return math.div($pixel, 16) + em;
+  } @else {
+    @error 'Don\'t use units when using the em() function; only numbers.';
+  }
+}
+
+@mixin rische {
+  font-family: $rische;
+  font-weight: 500;
+  line-height: 0.8;
+}
+
+$breakpoint-up: (
+  "medium": em(820),
+  "large": em(1025),
+  "xlarge": em(2040),
+);
+
+$breakpoint-down: (
+  "medium": em(819.98),
+  "large": em(1023.98),
+  "xlarge": em(2039.98),
+);
+
+@mixin breakpoint($size) {
+  @media screen and (min-width: map-get($breakpoint-up, $size)) {
+    @content;
+  }
+}
+
+@mixin breakpoint-down($size) {
+  @media screen and (min-width: map-get($breakpoint-down, $size)) {
+    @content;
+  }
+}
+
+@mixin full-width {
+  width: 100vw;
+  max-width: 100%;
+  padding-inline: 4vw;
+
+  @include breakpoint(medium) {
+    padding-inline: 20vw;
+  }
+
+  @include breakpoint(large) {
+    padding-inline: 35vw;
+  }
+
+  @include breakpoint(xlarge) {
+    padding-inline: 10vw;
+  }
+}
+
+@mixin webSecHero {
+  height: calc(100vh - rem(40) - rem(114.4) - rem(60) - rem(1.5));
+
+  @include breakpoint(medium) {
+    height: calc(100vh - rem(40) - rem(80.4) - rem(60) - rem(1.5));
+  }
+
+  @include breakpoint(large) {
+    height: calc(100vh - rem(40) - rem(114.4) - rem(40) - rem(1.5));
+  }
+}

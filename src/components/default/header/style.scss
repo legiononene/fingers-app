@@ -1,0 +1,15 @@
+@use "@/app/scss/variables" as *;
+
+header {
+  @include full-width;
+  height: rem(40);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+
+  a:nth-of-type(2) {
+    color: $red;
+    font-weight: normal;
+  }
+}
