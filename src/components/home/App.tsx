@@ -32,7 +32,7 @@ const App = () => {
   const [Primary, setPrimary] = useState("1");
   const { token, logout } = useAuth();
   const [imageLoading, setImageLoading] = useState(true);
-  const imgRef = useRef<HTMLImageElement | null>(null);
+  
   useEffect(() => {
     if (token) {
       // Initialize the socket connection
@@ -154,7 +154,7 @@ const App = () => {
       ) : data.fingers.length !== 0 ? (
         <section id="home">
           <div className="img-container">
-            <div className="image">
+            <div className="image" ref={imageRef}>
               <img
                 src={`${BackendUrl?.split("/api")[0] ?? ""}/finger/image/${
                   data.fingers[count].id
