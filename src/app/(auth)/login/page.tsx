@@ -33,7 +33,7 @@ const Page = () => {
         password: formData.password,
       }).then(async (data) => {
         login(data.token);
-        router.push("/app");
+        router.push("/");
       });
     } else if (formData.role === "ADMIN") {
       AdminLogin({
