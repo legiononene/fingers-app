@@ -21,12 +21,13 @@ const Page = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false); // state for toggling password visibility
-
+  const [loading,setIsLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
 
   const handleForm = (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     if (formData.role === "USER") {
       UserLogin({
         username: formData.username,
@@ -34,7 +35,11 @@ const Page = () => {
       }).then(async (data) => {
         login(data.token);
         router.push("/");
-      });
+      },()=>{
+          alert("error");
+      } ).finally(()=>{
+        setIsLoading(false);
+      })
     } else if (formData.role === "ADMIN") {
       AdminLogin({
         username: formData.username,
@@ -42,7 +47,12 @@ const Page = () => {
       }).then(async (data) => {
         login(data.token);
         router.push("/dashboard");
-      });
+      },()=>{
+          alert("error");
+        
+      }).finally(()=>{
+        setIsLoading(false);
+      })
     }
   };
 
@@ -98,7 +108,7 @@ const Page = () => {
           <option value="USER">User</option>
           <option value="ADMIN">Admin</option>
         </select>
-        <button type="submit">Login</button>
+        <button type="submit">{loading?"Loading...":"Login"}</button>
       </form>
     </section>
   );
