@@ -100,17 +100,28 @@
       border-radius: rem(10);
       padding: rem(10);
 
-      .lock-settings {
-        background-color: $red;
-        padding-block: rem(10);
+      .scale-buttons {
+        display: flex;
+        gap: rem(10);
+        .lock-settings {
+          background-color: $red;
+          padding-block: rem(10);
 
-        &:disabled {
-          background-color: gray;
+          &:disabled {
+            background-color: gray;
+          }
         }
-      }
 
-      .green {
-        background-color: $green;
+        .set-scale {
+          width: 40%;
+          background-color: $darkBlue;
+          &:disabled {
+            background-color: gray;
+          }
+        }
+        .green {
+          background-color: $green;
+        }
       }
 
       .settings-btn {

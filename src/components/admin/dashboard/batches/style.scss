@@ -33,12 +33,35 @@
       background-color: $dark;
       margin-top: rem(5);
     }
+    .links {
+      margin-top: rem(5);
+      display: flex;
+      gap: rem(10);
+
+      select {
+        padding: rem(10);
+        border-radius: rem(10);
+        border: none;
+        background-color: $red;
+
+        option[value="active"] {
+          background-color: $green;
+        }
+        option[value="inactive"] {
+          background-color: $red;
+        }
+      }
+
+      .active {
+        background-color: $green;
+      }
+    }
 
     a {
-      margin-top: rem(5);
       padding: rem(10);
       background-color: $blue;
       border-radius: rem(10);
+      flex: 1;
     }
   }
 }

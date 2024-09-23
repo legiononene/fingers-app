@@ -152,3 +152,29 @@ export const setFinger = (
     },
   });
 };
+
+export const getFinger = (studentId: string, token: string) => {
+  return api(`/users/get-fingers/${studentId}`, "GET", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deleteFinger = (fingerId: string, token: string) => {
+  return api(`/users/delete-finger/${fingerId}`, "DELETE", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const toggleBatchActive = (batchId: string, token: string) => {
+  return api(`/users/batch-toggle-active/${batchId}`, "PUT", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

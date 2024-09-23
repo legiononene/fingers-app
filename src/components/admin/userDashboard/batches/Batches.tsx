@@ -1,6 +1,6 @@
 "use client";
 
-import { ping } from "@/api/users-api";
+import { ping, toggleBatchActive } from "@/api/users-api";
 import { useEffect, useState } from "react";
 import "@/components/admin/dashboard/batches/style.scss";
 import Link from "next/link";
@@ -28,10 +28,39 @@ const Batches = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
-  console.log("Dashboard Data ->", data);
+  //console.log("Dashboard Data ->", data);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleToggleBatchStatus = async (
+    batchId: string,
+    currentStatus: boolean
+  ) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+    try {
+      // Call the toggle API
+      await toggleBatchActive(batchId, token);
+
+      // Optimistically update the local state to reflect the change
+      setData((prevData) => {
+        if (!prevData) return prevData;
+
+        return {
+          ...prevData,
+          data: prevData.data.map((batch) =>
+            batch.id === batchId
+              ? { ...batch, isActive: !currentStatus }
+              : batch
+          ),
+        };
+      });
+    } catch (error) {
+      console.error("Error toggling batch status:", error);
+    }
   };
 
   return (
@@ -62,10 +91,21 @@ const Batches = () => {
             .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically
             .map((item, i) => {
               return (
-                <Link href={`/user-dashboard/batches/${item.id}`} key={i}>
-                  {i + 1}. {item.name} | S: {item.students.length} |{" "}
-                  {item.isActive ? "Active" : "Inactive"}
-                </Link>
+                <div className="links">
+                  <Link href={`/user-dashboard/batches/${item.id}`} key={i}>
+                    {i + 1}. {item.name} | S: {item.students.length}
+                  </Link>
+                  <select
+                    value={item.isActive ? "active" : "inactive"}
+                    className={`${item.isActive ? "active" : ""}`}
+                    onChange={() =>
+                      handleToggleBatchStatus(item.id, item.isActive)
+                    }
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
               );
             })
         )}

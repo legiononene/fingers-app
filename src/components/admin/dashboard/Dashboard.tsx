@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { DashboardType } from "../../../types/types";
 import "./style.scss";
 import { getDashboard } from "@/api/admin-api";
@@ -51,10 +50,6 @@ const Dashboard = () => {
           <Link href="/dashboard/add-users">
             <AiOutlineUserAdd />
             Add Users
-          </Link>
-          <Link href="/dashboard/add-batches">
-            <AiOutlineUsergroupAdd />
-            Add Batches
           </Link>
         </div>
       </section>

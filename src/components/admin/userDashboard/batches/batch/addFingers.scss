@@ -26,8 +26,8 @@
       position: sticky;
       top: 0;
       background-color: $offLight;
-      padding: rem(10);
-      border-radius: rem(10);
+      padding-block: rem(10);
+      border-bottom: rem(1) solid $dark;
 
       button {
         padding: rem(5) rem(10);
@@ -37,10 +37,51 @@
       }
     }
 
+    .exist-fingers {
+      display: flex;
+      flex-direction: column;
+      gap: rem(5);
+      border-bottom: rem(1) solid $dark;
+      padding-block: rem(10);
+
+      .fingers {
+        display: flex;
+        gap: rem(5);
+        overflow-x: scroll;
+
+        .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: rem(5);
+          margin-bottom: rem(10);
+
+          img {
+            width: rem(60);
+            border-radius: rem(10);
+          }
+
+          button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $red;
+            background-color: $dark;
+            padding: rem(5) rem(10);
+            border-radius: rem(10);
+            font-size: rem(12);
+            cursor: pointer;
+            width: 100%;
+          }
+        }
+      }
+    }
+
     form {
       display: flex;
       flex-direction: column;
       gap: rem(10);
+      padding-block: rem(10);
 
       button {
         background-color: $dark;

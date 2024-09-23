@@ -17,13 +17,14 @@ import { useRouter } from "next/navigation";
 import AddStudents from "./AddStudents";
 import AddFingers from "./AddFingers";
 
+type FingerType = { primary: boolean; id: number };
 type StudentsType = [
   {
     id: number;
     name: string;
     aadhar_number: string;
     status: string;
-    fingers: { primary: boolean }[];
+    fingers: FingerType[];
     batch: { name: string };
   }
 ];
@@ -41,6 +42,7 @@ const Batch = ({ slug }: { slug: string }) => {
   const [openFingerUpload, setOpenFingerUpload] = useState<boolean>(false);
   const [studentToFinger, setStudentToFinger] = useState<number | null>(null);
   const [studentName, setStudentName] = useState<string | null>(null);
+  const [studentFingers, setStudentFingers] = useState<FingerType[]>([]);
 
   const router = useRouter();
   const fetchDashboardData = async () => {
@@ -58,7 +60,7 @@ const Batch = ({ slug }: { slug: string }) => {
     fetchDashboardData();
   }, []);
 
-  //console.log("students->", data);
+  console.log("students->", data);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -116,10 +118,15 @@ const Batch = ({ slug }: { slug: string }) => {
     setStudentToDelete(null); // Reset the student ID
   };
   //---------------------------------------> Add Finger
-  const handleFingerAddClick = (studentId: number, name: string) => {
+  const handleFingerAddClick = (
+    studentId: number,
+    name: string,
+    studentFingers: FingerType[]
+  ) => {
     setStudentToFinger(studentId); // Store the student ID to be deleted
     setOpenFingerUpload(true); // Show the delete confirmation dialog
     setStudentName(name);
+    setStudentFingers(studentFingers);
   };
 
   if (!data || JSON.stringify(data) == "[]") {
@@ -252,6 +259,9 @@ const Batch = ({ slug }: { slug: string }) => {
               openFingerUpload={openFingerUpload}
               setOpenFingerUpload={setOpenFingerUpload}
               studentName={studentName}
+              studentFingers={studentFingers}
+              fetchDashboardData={fetchDashboardData}
+              setStudentFingers={setStudentFingers}
             />
           )}
           <input
@@ -281,7 +291,9 @@ const Batch = ({ slug }: { slug: string }) => {
                     </Link>
                     <button
                       className="finger"
-                      onClick={() => handleFingerAddClick(b.id, b.name)}
+                      onClick={() =>
+                        handleFingerAddClick(b.id, b.name, b.fingers)
+                      }
                     >
                       <FaFingerprint size={20} />
                     </button>

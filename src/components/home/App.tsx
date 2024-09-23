@@ -120,26 +120,33 @@ const App = () => {
     setSettings(!settings);
   };
 
-  const handleLockScale = async () => {
+  const handleLockScale = () => {
     if (lockedScale === null) {
-      try {
-        await setFinger(
-          {
-            primary:
-              Primary == "1"
-                ? data.fingers[count].primary ?? ""
-                : "FD-" + Primary,
-            scale: scale.scale,
-          },
-          data.fingers[count].id.toString(),
-          token ?? ""
-        );
-      } catch (e) {
-        console.log(e);
-      }
       setLockedScale(scale.scale);
     } else {
       setLockedScale(null);
+    }
+  };
+  const handlesetScaleBtn = async () => {
+    try {
+      await setFinger(
+        {
+          primary:
+            Primary == "1"
+              ? data.fingers[count].primary ?? ""
+              : "FD-" + Primary,
+          scale: scale.scale,
+        },
+        data.fingers[count].id.toString(),
+        token ?? ""
+      );
+      data.fingers[count].scale = scale.scale;
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setScale({ scale: data.fingers[count].scale });
+
+      setLockedScale(scale.scale);
     }
   };
   useEffect(() => {
@@ -240,15 +247,24 @@ const App = () => {
                   </div>
                 </div>
               </div>
-              <button
-                className={`lock-settings ${
-                  lockedScale === null ? "green" : ""
-                }`}
-                disabled={!settings}
-                onClick={handleLockScale}
-              >
-                {lockedScale === null ? "Lock Scale" : "Unlock Scale"}
-              </button>
+              <div className="scale-buttons">
+                <button
+                  className={`lock-settings ${
+                    lockedScale === null ? "green" : ""
+                  }`}
+                  disabled={!settings}
+                  onClick={handleLockScale}
+                >
+                  {lockedScale === null ? "Lock Scale" : "Unlock Scale"}
+                </button>
+                <button
+                  className="set-scale"
+                  disabled={!settings}
+                  onClick={handlesetScaleBtn}
+                >
+                  Set Scale
+                </button>
+              </div>
             </div>
             <div className="change">
               <button onClick={handlePrev}>Previous</button>
@@ -268,4 +284,3 @@ const App = () => {
 };
 
 export default App;
-11554422;

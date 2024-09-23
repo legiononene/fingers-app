@@ -143,3 +143,11 @@ export const deleteUser = (userId: string, token: string) => {
     },
   });
 };
+
+export const toggleBatchActive = (batchId: string, token: string) => {
+  return api(`/admin/batch-toggle-active/${batchId}`, "PUT", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
