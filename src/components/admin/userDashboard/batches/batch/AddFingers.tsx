@@ -165,9 +165,6 @@ const AddFingers = ({
           prevFingers.filter((finger) => finger.id !== fingerId)
         );
         setStatusMessage("Finger deleted successfully");
-      } else {
-        // If the API responds with something other than success
-        throw new Error("Failed to delete finger");
       }
     } catch (error: any) {
       setStatusMessage(
