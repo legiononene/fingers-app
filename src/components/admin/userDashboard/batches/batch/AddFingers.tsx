@@ -208,6 +208,7 @@ const AddFingers = ({
       setStatusMessage("Fingers Uploaded Successfully");
       setBaseSixtyFourFiles([]);
       setProcessedImages([]);
+      setOpenFingerUpload(false);
     } catch (error) {
       setStatusMessage("Error processing files");
       console.error("Error converting files to Base64", error);
