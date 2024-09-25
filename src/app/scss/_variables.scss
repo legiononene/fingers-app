@@ -65,6 +65,7 @@ $breakpoint-down: (
   width: 100vw;
   max-width: 100%;
   padding-inline: 4vw;
+  padding-bottom: 5vh;
 
   @include breakpoint(medium) {
     padding-inline: 20vw;

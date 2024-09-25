@@ -1,15 +1,15 @@
 @use "@/app/scss/variables" as *;
 
 #logout {
-    @include full-width;
-    display: flex;
-    justify-content: flex-end;
+  @include full-width;
+  padding-bottom: 0;
+  display: flex;
+  justify-content: flex-end;
 
-    button {
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: rem(5);
-        
-    }
+  button {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: rem(5);
+  }
 }
