@@ -63,6 +63,9 @@
         border-radius: rem(10);
         padding: rem(10);
         resize: none;
+        &:nth-of-type(1) {
+          width: 60%;
+        }
       }
 
       button {

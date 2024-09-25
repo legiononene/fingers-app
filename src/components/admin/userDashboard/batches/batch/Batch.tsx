@@ -191,12 +191,15 @@ const Batch = ({ slug }: { slug: string }) => {
             close={setOpenAddStudents}
             success={success}
             setSuccess={setSuccess}
+            fetchDashboardData={fetchDashboardData}
           />
           {openMultipleStudentsForm && (
             <AddMultipleStudents
               branchID={slug}
               setSuccess={setSuccess}
               setOpenMultipleStudentsForm={setOpenMultipleStudentsForm}
+              fetchDashboardData={fetchDashboardData}
+              success={success}
             />
           )}
         </div>
@@ -279,12 +282,15 @@ const Batch = ({ slug }: { slug: string }) => {
             close={setOpenAddStudents}
             success={success}
             setSuccess={setSuccess}
+            fetchDashboardData={fetchDashboardData}
           />
           {openMultipleStudentsForm && (
             <AddMultipleStudents
               branchID={slug}
               setSuccess={setSuccess}
               setOpenMultipleStudentsForm={setOpenMultipleStudentsForm}
+              fetchDashboardData={fetchDashboardData}
+              success={success}
             />
           )}
           {openFingerUpload && studentToFinger && studentName && (

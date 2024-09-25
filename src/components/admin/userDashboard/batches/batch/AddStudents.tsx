@@ -19,12 +19,14 @@ const AddStudents = ({
   close,
   setSuccess,
   success,
+  fetchDashboardData,
 }: {
   branchID: string;
   open: boolean;
   close: (value: boolean) => void;
   setSuccess: (value: string) => void;
   success: string;
+  fetchDashboardData: () => void;
 }) => {
   const [addMore, setAddMore] = useState([{ name: "", aadhar_number: "" }]);
   const [error, setError] = useState("");
@@ -48,6 +50,7 @@ const AddStudents = ({
       await addStudent(formDataFinal, token);
       setSuccess("Students added successfully!");
       setAddMore([{ name: "", aadhar_number: "" }]);
+      fetchDashboardData();
     } catch (error) {
       console.error("Error details:", error);
       if (error instanceof z.ZodError) {

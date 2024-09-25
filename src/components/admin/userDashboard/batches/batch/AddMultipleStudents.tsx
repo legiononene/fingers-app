@@ -8,10 +8,14 @@ const AddMultipleStudents = ({
   branchID,
   setSuccess,
   setOpenMultipleStudentsForm,
+  fetchDashboardData,
+  success,
 }: {
   branchID: string;
   setSuccess: (value: string) => void;
   setOpenMultipleStudentsForm: (value: boolean) => void;
+  fetchDashboardData: () => void;
+  success: string;
 }) => {
   const [name, setName] = useState("");
   const [aadhar, seAadhar] = useState("");
@@ -45,6 +49,8 @@ const AddMultipleStudents = ({
       setSuccess("Students added successfully!");
       setName("");
       seAadhar("");
+      fetchDashboardData();
+      setOpenMultipleStudentsForm(false);
     } catch (error) {
       console.error("Error details:", error);
       if (error instanceof Error) {
@@ -114,6 +120,7 @@ const AddMultipleStudents = ({
           <button type="submit">Submit All Students</button>
         </form>
         {error && <p className="error">{error}</p>}
+        {success && <p className="success">{success}</p>}
       </div>
     </section>
   );
