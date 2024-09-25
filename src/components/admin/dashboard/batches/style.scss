@@ -43,6 +43,7 @@
         border-radius: rem(10);
         border: none;
         background-color: $red;
+        cursor: pointer;
 
         option[value="active"] {
           background-color: $green;
@@ -62,6 +63,10 @@
       background-color: $blue;
       border-radius: rem(10);
       flex: 1;
+
+      &:hover {
+        background-color: #2eb2ff;
+      }
     }
   }
 }

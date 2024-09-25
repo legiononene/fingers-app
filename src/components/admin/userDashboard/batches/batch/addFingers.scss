@@ -96,6 +96,10 @@
           padding: rem(5) rem(10);
           border-radius: rem(10);
           color: $dark;
+
+          &:hover {
+            background-color: #0deb5a;
+          }
         }
 
         &[type="submit"] {
@@ -145,11 +149,28 @@
               width: rem(35);
               aspect-ratio: 1 / 1;
             }
+
+            .processiong {
+              animation: rotate 1s linear infinite;
+
+              @keyframes rotate {
+                from {
+                  transform: rotate(0deg);
+                }
+                to {
+                  transform: rotate(360deg);
+                }
+              }
+            }
           }
 
           .selected {
             background-color: $dark;
             color: $light;
+
+            &:hover {
+              background-color: $dark;
+            }
           }
 
           p {

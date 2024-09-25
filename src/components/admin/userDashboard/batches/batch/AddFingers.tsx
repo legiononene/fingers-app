@@ -1,6 +1,7 @@
 "use client";
 
 import { BsFiletypeRaw } from "react-icons/bs";
+import { BsArrowRepeat } from "react-icons/bs";
 import { IoFingerPrintSharp } from "react-icons/io5";
 import { z } from "zod";
 import "./addFingers.scss";
@@ -342,6 +343,8 @@ const AddFingers = ({
                       alt="Processed Fingerprint"
                       crossOrigin="anonymous"
                     />
+                  ) : isProcessing ? (
+                    <BsArrowRepeat size={40} className="processiong" />
                   ) : (
                     <BsFiletypeRaw size={40} />
                   )}
@@ -380,7 +383,7 @@ const AddFingers = ({
           <button type="submit">Add Fingers</button>
         </form>
         {statusMessage && <p>{statusMessage}</p>}
-        {isProcessing && <p>Processing image...</p>}
+        {isProcessing && <p>Processing image. Please wait..</p>}
         {error && <p>{error}</p>}
       </div>
     </section>
