@@ -1,34 +1,22 @@
 "use client";
 
+import { BiCloudUpload } from "react-icons/bi";
+import { TbHandThreeFingers } from "react-icons/tb";
 import { BsFiletypeRaw } from "react-icons/bs";
 import { BsArrowRepeat } from "react-icons/bs";
 import { IoFingerPrintSharp } from "react-icons/io5";
 import { z } from "zod";
 import "./addFingers.scss";
-import { useEffect, useState } from "react";
+import React, {
+  MouseEventHandler,
+  useEffect,
+  useState,
+  FormEvent,
+} from "react";
 import { addFingers, deleteFinger, getFinger } from "@/api/users-api";
 import { MdDelete } from "react-icons/md";
 
 const BackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-const fingersSchema = z.array(
-  z.object({
-    image: z.string(), // base64 string
-    scale: z.number(),
-    primary: z.string().optional(),
-  })
-);
-
-type StudentsType = [
-  {
-    id: number;
-    name: string;
-    aadhar_number: string;
-    status: string;
-    fingers: { primary: boolean }[];
-    batch: { name: string };
-  }
-];
 
 type FingerType = { primary: boolean; id: number };
 
@@ -42,6 +30,16 @@ type FingersDataTypes = {
   setStudentFingers: (value: FingerType[]) => void;
 };
 
+const fingersSchema = z.array(
+  z.object({
+    image: z.string(), // base64 string
+    scale: z.number(),
+    primary: z.string().optional(),
+    name: z.string(),
+    mode: z.enum(["FILE", "BS64", "emt"]),
+  })
+);
+
 const AddFingers = ({
   studentId,
   openFingerUpload,
@@ -51,14 +49,19 @@ const AddFingers = ({
   fetchDashboardData,
   setStudentFingers,
 }: FingersDataTypes) => {
-  const [files, setFiles] = useState<File[]>([{} as File]);
-  const [baseSixtyFourFiles, setBaseSixtyFourFiles] = useState<
-    { image: string; scale: number; primary?: string }[]
-  >([]);
+  const [files, setFiles] = useState<z.infer<typeof fingersSchema>>([
+    {
+      image: "",
+      mode: "emt",
+      name: "",
+      scale: 1,
+    },
+  ]);
+
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [existingFingers, setExistingFingers] = useState<FingerType[]>([]);
   const [processedImages, setProcessedImages] = useState<string[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState<boolean[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   console.log("studentFingers->", studentFingers);
@@ -86,33 +89,41 @@ const AddFingers = ({
 
   const handleFileChange = async (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement> | any
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (e.target.files && e.target.files[0]) {
+    if (!e.target.files || e.target.files.length === 0) return;
+    try {
       const selectedFile = e.target.files[0];
-      setFiles((prevFiles) => {
-        const newFiles = [...prevFiles];
-        newFiles[index] = selectedFile;
+      const base64 = await fileToBase64(selectedFile);
+
+      setFiles((prev) => {
+        const newFiles = [...prev];
+        newFiles[index] = {
+          image: base64,
+          mode: "FILE",
+          name: selectedFile.name,
+          scale: 1,
+        };
         return newFiles;
       });
-
-      try {
-        const base64 = await fileToBase64(selectedFile);
-        setBaseSixtyFourFiles((prevBase64Files) => {
-          const newBase64Files = [...prevBase64Files];
-          newBase64Files[index] = { image: base64, scale: 1 };
-          return newBase64Files;
-        });
-        setStatusMessage("File converted to base64");
-      } catch (error) {
-        console.error("Error converting file to Base64", error);
-      }
+      setStatusMessage("File converted to base64");
+    } catch (error) {
+      console.error("Error converting file to Base64", error);
     }
   };
 
   const addMoreFiles = () => {
     if (files.length < 6) {
-      setFiles((prevFiles) => [...prevFiles, {} as File]);
+      setFiles((prevFiles) => [
+        ...prevFiles,
+        {
+          image: "",
+          scale: 1,
+          mode: "emt",
+          name: "",
+        },
+      ]);
+      setIsProcessing((prev) => [...prev, false]);
     }
   };
 
@@ -131,16 +142,24 @@ const AddFingers = ({
 
   const handleRawFileChange = async (
     index: number,
-    event: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const files = event.target.files;
+    if (e.target.files == null || e.target.files.length === 0) return;
+
+    const files = e.target.files;
+
+    setIsProcessing((prev) => {
+      const newProcessing = [...prev];
+      newProcessing[index] = true; // Set processing to true for this index
+      return newProcessing;
+    });
+
     if (!files || files.length === 0) {
       setError("Please upload a valid image file.");
       return;
     }
 
     const file = files[0];
-    setIsProcessing(true);
     setError(null);
 
     try {
@@ -162,29 +181,36 @@ const AddFingers = ({
         throw new Error(`Failed to process the image: ${result.error}`);
       }
 
-      setProcessedImages((prev) => {
-        const newImages = [...prev];
-        newImages[index] = `data:image/jpeg;base64,${result.processedImage}`;
-        return newImages;
-      });
-      setBaseSixtyFourFiles((prev) => [
-        ...prev,
-        {
-          image: processedImages[index],
+      setFiles((prv) => {
+        const newFiles = prv;
+        newFiles[index] = {
+          image: `data:image/jpeg;base64,${result.processedImage}`,
+          mode: "BS64",
+          name:
+            e.target.files && e.target.files.length != 0
+              ? e.target.files[0].name
+              : "",
           scale: 1,
-        },
-      ]);
+        };
+        return newFiles;
+      });
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Unknown error occurred.";
       setError(`An error occurred while processing the image: ${errorMessage}`);
       console.error("Detailed error:", err);
     } finally {
-      setIsProcessing(false);
+      setIsProcessing((prev) => {
+        const newProcessing = [...prev];
+        newProcessing[index] = false; // Set processing to false for this index
+        return newProcessing;
+      });
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
 
     try {
@@ -194,10 +220,10 @@ const AddFingers = ({
       }
 
       console.log("processedImages->", processedImages);
-      const finalFingers = baseSixtyFourFiles.map((base64File, i) => {
+      const finalFingers = files.map((base64File, i) => {
         console.log("base64File->", base64File);
         return {
-          image: processedImages[i] || base64File.image,
+          image: base64File.image,
           scale: base64File.scale,
           primary: `FD-${i + 1}`,
         };
@@ -206,7 +232,14 @@ const AddFingers = ({
       await addFingers(finalFingers, studentId, token);
 
       setStatusMessage("Fingers Uploaded Successfully");
-      setBaseSixtyFourFiles([]);
+      setFiles([
+        {
+          image: "",
+          mode: "emt",
+          name: "",
+          scale: 1,
+        },
+      ]);
       setProcessedImages([]);
       setOpenFingerUpload(false);
     } catch (error) {
@@ -255,15 +288,8 @@ const AddFingers = ({
     }
   };
   const handleRemove = () => {
-    // Only remove the last entry from both files and processedImages if there are more than one
     if (files.length > 1) {
-      setFiles((prev) => prev.slice(0, -1)); // Remove last file
-      setProcessedImages((prev) => {
-        const newImages = [...prev];
-        newImages.pop(); // Remove last processed image corresponding to the last file
-        return newImages;
-      });
-      setBaseSixtyFourFiles((prev) => prev.slice(0, -1)); // Remove the last base64 entry
+      setFiles((prev) => prev.slice(0, -1));
     }
   };
 
@@ -274,7 +300,56 @@ const AddFingers = ({
           <h4>
             Fingers of: {studentName} | {studentId}
           </h4>
-          <button onClick={() => setOpenFingerUpload(false)}>Close</button>
+          <div className="two">
+            <button
+              onClick={() => {
+                const inputElement = document.getElementById(
+                  "multipleImages"
+                ) as HTMLInputElement | null;
+                inputElement?.click();
+              }}
+              className={files.some((file) => file.image) ? "selected" : ""}
+            >
+              <TbHandThreeFingers size={20} />
+            </button>
+            <input
+              id="multipleImages"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                if (e.target.files == null) return;
+                if (e.target.files.length == 0) return;
+                if (e.target.files[0] == null) return;
+
+                try {
+                  Array.from(e.target.files).map(async (fl, index) => {
+                    const base64 = await fileToBase64(fl);
+                    console.log(base64);
+                    setStatusMessage("File converted to base64");
+                    setFiles((prv) => {
+                      const newFiles = prv;
+                      newFiles[index] = {
+                        image: base64,
+                        mode: "FILE",
+                        name:
+                          e.target.files && e.target.files.length != 0
+                            ? e.target.files[0].name
+                            : "",
+                        scale: 1,
+                      };
+                      return newFiles;
+                    });
+                  });
+                } catch (error) {
+                  console.error("Error converting file to Base64", error);
+                }
+              }}
+              style={{ display: "none" }}
+            />
+
+            <button onClick={() => setOpenFingerUpload(false)}>Close</button>
+          </div>
         </div>
         {studentFingers.length > 0 && (
           <div className="exist-fingers">
@@ -308,7 +383,7 @@ const AddFingers = ({
               <div className="enhanced">
                 <button
                   type="button"
-                  className={file.name && "selected"}
+                  className={file.name && file.mode == "FILE" ? "selected" : ""}
                   onClick={() => {
                     const inputElement = document.getElementById(
                       `fileInput_${index}`
@@ -316,7 +391,11 @@ const AddFingers = ({
                     inputElement?.click();
                   }}
                 >
-                  {file.name ? file.name : <IoFingerPrintSharp size={40} />}
+                  {file.name && file.mode == "FILE" ? (
+                    file.name
+                  ) : (
+                    <IoFingerPrintSharp size={40} />
+                  )}
                 </button>
                 <input
                   type="file"
@@ -330,7 +409,7 @@ const AddFingers = ({
               <div className="unEnhanced">
                 <button
                   type="button"
-                  className={processedImages[index] && "selected"}
+                  className={file.mode == "BS64" ? "selected" : ""}
                   onClick={() => {
                     const inputElement = document.getElementById(
                       `rawFileInput_${index}`
@@ -338,13 +417,13 @@ const AddFingers = ({
                     inputElement?.click();
                   }}
                 >
-                  {processedImages[index] ? (
+                  {file.mode == "BS64" ? (
                     <img
-                      src={processedImages[index]}
+                      src={file.image}
                       alt="Processed Fingerprint"
                       crossOrigin="anonymous"
                     />
-                  ) : isProcessing ? (
+                  ) : isProcessing[index] ? (
                     <BsArrowRepeat size={40} className="processiong" />
                   ) : (
                     <BsFiletypeRaw size={40} />
@@ -384,7 +463,9 @@ const AddFingers = ({
           <button type="submit">Add Fingers</button>
         </form>
         {statusMessage && <p>{statusMessage}</p>}
-        {isProcessing && <p>Processing image. Please wait..</p>}
+        {isProcessing.some((processing) => processing) && (
+          <p>Processing image. Please wait..</p>
+        )}
         {error && <p>{error}</p>}
       </div>
     </section>

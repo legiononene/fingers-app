@@ -1,5 +1,6 @@
 "use client";
 
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { FaFingerprint } from "react-icons/fa";
 import { IoReloadCircle } from "react-icons/io5";
 import { AiOutlineUserAdd } from "react-icons/ai";
@@ -16,6 +17,7 @@ import { MdDelete } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import AddStudents from "./AddStudents";
 import AddFingers from "./AddFingers";
+import AddMultipleStudents from "./AddMultipleStudents";
 
 type FingerType = { primary: boolean; id: number };
 type StudentsType = [
@@ -43,6 +45,8 @@ const Batch = ({ slug }: { slug: string }) => {
   const [studentToFinger, setStudentToFinger] = useState<number | null>(null);
   const [studentName, setStudentName] = useState<string | null>(null);
   const [studentFingers, setStudentFingers] = useState<FingerType[]>([]);
+  const [openMultipleStudentsForm, setOpenMultipleStudentsForm] =
+    useState<boolean>(false);
 
   const router = useRouter();
   const fetchDashboardData = async () => {
@@ -157,6 +161,14 @@ const Batch = ({ slug }: { slug: string }) => {
               >
                 <AiOutlineUserAdd size={20} />
               </button>
+              <button
+                onClick={() => {
+                  data && setOpenMultipleStudentsForm(true);
+                  setSuccess("");
+                }}
+              >
+                <AiOutlineUsergroupAdd size={20} />
+              </button>
               <button onClick={() => handleDeleteClick(slug)}>
                 <MdDelete size={20} />
               </button>
@@ -180,6 +192,13 @@ const Batch = ({ slug }: { slug: string }) => {
             success={success}
             setSuccess={setSuccess}
           />
+          {openMultipleStudentsForm && (
+            <AddMultipleStudents
+              branchID={slug}
+              setSuccess={setSuccess}
+              setOpenMultipleStudentsForm={setOpenMultipleStudentsForm}
+            />
+          )}
         </div>
       </section>
     );
@@ -213,6 +232,14 @@ const Batch = ({ slug }: { slug: string }) => {
                 }}
               >
                 <AiOutlineUserAdd size={20} />
+              </button>
+              <button
+                onClick={() => {
+                  data && setOpenMultipleStudentsForm(true);
+                  setSuccess("");
+                }}
+              >
+                <AiOutlineUsergroupAdd size={20} />
               </button>
               <button onClick={() => data && handleDeleteClick(slug)}>
                 <MdDelete size={20} />
@@ -253,6 +280,13 @@ const Batch = ({ slug }: { slug: string }) => {
             success={success}
             setSuccess={setSuccess}
           />
+          {openMultipleStudentsForm && (
+            <AddMultipleStudents
+              branchID={slug}
+              setSuccess={setSuccess}
+              setOpenMultipleStudentsForm={setOpenMultipleStudentsForm}
+            />
+          )}
           {openFingerUpload && studentToFinger && studentName && (
             <AddFingers
               studentId={studentToFinger.toString()}

@@ -29,6 +29,21 @@
       padding-block: rem(10);
       border-bottom: rem(1) solid $dark;
 
+      .two {
+        display: flex;
+        gap: rem(10);
+
+        .selected {
+          background-color: $dark;
+          color: $light;
+        }
+
+        button:disabled {
+          background-color: gray;
+          cursor: not-allowed;
+        }
+      }
+
       button {
         padding: rem(5) rem(10);
         background-color: $pink;

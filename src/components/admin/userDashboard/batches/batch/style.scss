@@ -1,6 +1,7 @@
 @use "@/app/scss/variables" as *;
 
-#addStudentsModel {
+#addStudentsModel,
+#addMultipleStudents {
   @include full-width;
   position: fixed;
   background-color: #0000003f;
@@ -53,6 +54,15 @@
         input {
           width: 50%;
         }
+      }
+
+      textarea {
+        background: none;
+        outline: none;
+        border: rem(1) solid $dark;
+        border-radius: rem(10);
+        padding: rem(10);
+        resize: none;
       }
 
       button {
