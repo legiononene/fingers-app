@@ -7,12 +7,7 @@ import { BsArrowRepeat } from "react-icons/bs";
 import { IoFingerPrintSharp } from "react-icons/io5";
 import { z } from "zod";
 import "./addFingers.scss";
-import React, {
-  MouseEventHandler,
-  useEffect,
-  useState,
-  FormEvent,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { addFingers, deleteFinger, getFinger } from "@/api/users-api";
 import { MdDelete } from "react-icons/md";
 
@@ -85,7 +80,7 @@ const AddFingers = ({
     fetchFingers();
   }, [studentId]);
 
-  console.log("existingFingers->", existingFingers);
+  //console.log("existingFingers->", existingFingers);
 
   const handleFileChange = async (
     index: number,
@@ -302,6 +297,7 @@ const AddFingers = ({
           </h4>
           <div className="two">
             <button
+              title="Add Multiple Fingerprints (Enhanced)"
               onClick={() => {
                 const inputElement = document.getElementById(
                   "multipleImages"
@@ -382,6 +378,7 @@ const AddFingers = ({
               {/* ----------------enhanced -----------------*/}
               <div className="enhanced">
                 <button
+                  title="Add a Fingerprint (Enhanced)"
                   type="button"
                   className={file.name && file.mode == "FILE" ? "selected" : ""}
                   onClick={() => {
@@ -408,6 +405,7 @@ const AddFingers = ({
               {/* ----------------unEnhanced -----------------*/}
               <div className="unEnhanced">
                 <button
+                  title="Add a Fingerprint (Raw)"
                   type="button"
                   className={file.mode == "BS64" ? "selected" : ""}
                   onClick={() => {

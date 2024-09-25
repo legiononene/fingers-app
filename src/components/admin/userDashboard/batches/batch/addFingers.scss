@@ -33,14 +33,29 @@
         display: flex;
         gap: rem(10);
 
+        button {
+          background-color: $green;
+
+          &:hover {
+            background-color: #0deb5a;
+          }
+
+          &:nth-last-of-type(1) {
+            background-color: $pink;
+
+            &:hover {
+              background-color: $pink;
+            }
+          }
+        }
+
         .selected {
           background-color: $dark;
           color: $light;
-        }
 
-        button:disabled {
-          background-color: gray;
-          cursor: not-allowed;
+          &:hover {
+            background-color: $dark;
+          }
         }
       }
 

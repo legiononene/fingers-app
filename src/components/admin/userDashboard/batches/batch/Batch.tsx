@@ -150,10 +150,11 @@ const Batch = ({ slug }: { slug: string }) => {
           <h4>
             No data
             <div className="buttons">
-              <button onClick={() => fetchDashboardData()}>
+              <button title="Refresh" onClick={() => fetchDashboardData()}>
                 <IoReloadCircle size={20} />
               </button>
               <button
+                title="Add students"
                 onClick={() => {
                   data && setOpenAddStudents(true);
                   setSuccess("");
@@ -162,6 +163,7 @@ const Batch = ({ slug }: { slug: string }) => {
                 <AiOutlineUserAdd size={20} />
               </button>
               <button
+                title="Add multiple students from excel"
                 onClick={() => {
                   data && setOpenMultipleStudentsForm(true);
                   setSuccess("");
@@ -169,7 +171,10 @@ const Batch = ({ slug }: { slug: string }) => {
               >
                 <AiOutlineUsergroupAdd size={20} />
               </button>
-              <button onClick={() => handleDeleteClick(slug)}>
+              <button
+                title="Delete this batch"
+                onClick={() => handleDeleteClick(slug)}
+              >
                 <MdDelete size={20} />
               </button>
             </div>
@@ -225,10 +230,11 @@ const Batch = ({ slug }: { slug: string }) => {
               ? "loading..."
               : `${data[0].batch.name}: ${data.length ? data.length : 0}`}
             <div className="buttons">
-              <button onClick={() => fetchDashboardData()}>
+              <button title="Refresh" onClick={() => fetchDashboardData()}>
                 <IoReloadCircle size={20} />
               </button>
               <button
+                title="Add students"
                 onClick={() => {
                   data && setOpenAddStudents(true);
                   setSuccess("");
@@ -237,6 +243,7 @@ const Batch = ({ slug }: { slug: string }) => {
                 <AiOutlineUserAdd size={20} />
               </button>
               <button
+                title="Add multiple students from excel"
                 onClick={() => {
                   data && setOpenMultipleStudentsForm(true);
                   setSuccess("");
@@ -244,7 +251,10 @@ const Batch = ({ slug }: { slug: string }) => {
               >
                 <AiOutlineUsergroupAdd size={20} />
               </button>
-              <button onClick={() => data && handleDeleteClick(slug)}>
+              <button
+                title="Delete this batch"
+                onClick={() => data && handleDeleteClick(slug)}
+              >
                 <MdDelete size={20} />
               </button>
             </div>
@@ -330,6 +340,7 @@ const Batch = ({ slug }: { slug: string }) => {
                       <span>S: {b.status} (today)</span>
                     </Link>
                     <button
+                      title={`Add Fingerprints to ${b.name}`}
                       className="finger"
                       onClick={() =>
                         handleFingerAddClick(b.id, b.name, b.fingers)
@@ -338,7 +349,10 @@ const Batch = ({ slug }: { slug: string }) => {
                       <FaFingerprint size={20} />
                     </button>
                     {/* Delete button for each student */}
-                    <button onClick={() => handleStudentDeleteClick(b.id)}>
+                    <button
+                      title={`Delete ${b.name}`}
+                      onClick={() => handleStudentDeleteClick(b.id)}
+                    >
                       <MdDelete size={20} />
                     </button>
                   </div>
