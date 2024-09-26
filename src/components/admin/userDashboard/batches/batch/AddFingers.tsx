@@ -59,10 +59,10 @@ const AddFingers = ({
   const [isProcessing, setIsProcessing] = useState<boolean[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  console.log("studentFingers->", studentFingers);
-  console.log("studentId->", studentId);
-  console.log("baseSixtyFourFiles->", studentFingers);
-  console.log("processedImages->", studentId);
+  //console.log("studentFingers->", studentFingers);
+  //console.log("studentId->", studentId);
+  //console.log("baseSixtyFourFiles->", studentFingers);
+  //console.log("processedImages->", studentId);
 
   const fetchFingers = async () => {
     try {
@@ -214,9 +214,9 @@ const AddFingers = ({
         throw new Error("No authentication token found. Please log in again.");
       }
 
-      console.log("processedImages->", processedImages);
+      //console.log("processedImages->", processedImages);
       const finalFingers = files.map((base64File, i) => {
-        console.log("base64File->", base64File);
+        //console.log("base64File->", base64File);
         return {
           image: base64File.image,
           scale: base64File.scale,
@@ -321,7 +321,7 @@ const AddFingers = ({
                 try {
                   Array.from(e.target.files).map(async (fl, index) => {
                     const base64 = await fileToBase64(fl);
-                    console.log(base64);
+                    //console.log(base64);
                     setStatusMessage("File converted to base64");
                     setFiles((prv) => {
                       const newFiles = prv;

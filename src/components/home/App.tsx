@@ -44,7 +44,7 @@ const App = () => {
 
       // Set up listeners for 'finger' event
       newSocket.on("connect", () => {
-        console.log("Socket connected:", newSocket.id);
+        //console.log("Socket connected:", newSocket.id);
       });
 
       const extractNumber = (primary: string | null): number => {
@@ -63,7 +63,7 @@ const App = () => {
             fingers: FingersType[];
           };
         }) => {
-          console.log("Received data:", receivedData);
+          //console.log("Received data:", receivedData);
           const sortedData = receivedData.data.fingers.toSorted(
             (a, b) => extractNumber(a.primary) - extractNumber(b.primary)
           );

@@ -75,7 +75,7 @@ const Students = () => {
     }
   }, [data]);
 
-  console.log("students->", data);
+  //console.log("students->", data);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

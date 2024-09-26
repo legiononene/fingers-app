@@ -22,11 +22,11 @@ const Page = () => {
 
       // Set up listeners for 'finger' event
       newSocket.on("connect", () => {
-        console.log("Socket connected:", newSocket.id);
+        //console.log("Socket connected:", newSocket.id);
       });
 
       newSocket.on("finger_data", (receivedData) => {
-        console.log("Received data:", receivedData); // Debugging to see if data is received
+        //console.log("Received data:", receivedData); // Debugging to see if data is received
         setData(receivedData);
       });
 
