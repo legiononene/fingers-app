@@ -49,8 +49,10 @@
       align-items: center;
 
       span {
+        width: min-content;
         font-size: rem(12);
         color: $light;
+        text-wrap: wrap;
       }
     }
   }

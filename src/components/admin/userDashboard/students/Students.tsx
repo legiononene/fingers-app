@@ -1,25 +1,42 @@
 "use client";
 
-import { ping } from "@/api/users-api";
+import { getAllStudentsBybatch, ping } from "@/api/users-api";
 import "@/components/admin/dashboard/users/user/batch/style.scss";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IoCaretBack } from "react-icons/io5";
 
-type Students = {
-  data: [
-    { students: [{ aadhar_number: string; name: string; status: string }] }
-  ];
+type Student = {
+  id: number;
+  status: string;
+  batchId: string;
+  aadhar_number: string;
+  name: string;
+};
+
+type Batch = {
+  data: {
+    id: string;
+    students: {
+      aadhar_number: string;
+      name: string;
+      status: string;
+    }[];
+  }[];
 };
 
 const Students = () => {
-  const [data, setData] = useState<Students>();
+  const [data, setData] = useState<Batch>();
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [studentsData, setStudentData] = useState<Student[]>([]);
   const fetchDashboardData = async () => {
     const token = localStorage.getItem("token");
     try {
       const dashboardData = await ping(token ?? "");
+
+      //const students = await getAllStudentsBybatch(token ?? "", batchId);
+
+      //setStudentData(students);
 
       setData(dashboardData);
     } catch (error) {
@@ -27,14 +44,48 @@ const Students = () => {
     }
   };
 
+  const fetchAllStudentsByBatch = async () => {
+    if (!data) return;
+    const token = localStorage.getItem("token");
+
+    try {
+      const students = await Promise.all(
+        data.data.map(async (batch) => {
+          const batchStudents = await getAllStudentsBybatch(
+            token ?? "",
+            batch.id
+          );
+          return batchStudents;
+        })
+      );
+
+      setStudentData(students.flat()); // Flatten the array of arrays
+    } catch (error) {
+      console.error("Error fetching students data:", error);
+    }
+  };
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
-  //console.log("students->", data);
+  useEffect(() => {
+    if (data) {
+      fetchAllStudentsByBatch();
+    }
+  }, [data]);
+
+  console.log("students->", data);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const getStudentStatus = (batchId: string, aadhar_number: string) => {
+    const student = studentsData.find(
+      (s) => s.batchId === batchId && s.aadhar_number === aadhar_number
+    );
+    return student?.status || "Unknown";
   };
 
   return (
@@ -50,10 +101,21 @@ const Students = () => {
           Students:{" "}
           {!data
             ? "loading..."
-            : data.data.reduce(
+            : `${data.data.reduce(
                 (partialSum, a) => partialSum + a.students.length,
                 0
-              )}
+              )} | In: ${
+                studentsData.filter(
+                  (student) => student.status === "Present-not-out"
+                ).length
+              } | Out: ${
+                studentsData.filter(
+                  (student) => student.status === "Present-with-out"
+                ).length
+              } | A: ${
+                studentsData.filter((student) => student.status === "Absent")
+                  .length
+              }`}
         </h4>
         <input
           type="text"
@@ -67,16 +129,22 @@ const Students = () => {
           <p>loading...</p>
         ) : (
           data.data
-            .flatMap((a) => a.students)
-            .filter((name) =>
-              name.name.toLowerCase().includes(searchTerm.toLowerCase())
+            .flatMap((a) =>
+              a.students.map((student) => ({ ...student, batchId: a.id }))
+            )
+            .filter((student) =>
+              student.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically
-            .map((b, i) => {
+            .map((student, i) => {
+              const studentStatus = getStudentStatus(
+                student.batchId,
+                student.aadhar_number
+              );
               return (
                 <Link href="" key={i}>
-                  {i + 1}. {b.name} | A: {b.aadhar_number}{" "}
-                  <span>S: (Today)</span>
+                  {i + 1}. {student.name} | A: {student.aadhar_number}{" "}
+                  <span> {studentStatus}</span>
                 </Link>
               );
             })
